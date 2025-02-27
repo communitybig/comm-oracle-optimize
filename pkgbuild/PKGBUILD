@@ -1,9 +1,9 @@
 # Maintainer: Tales A. Mendonça <talesam@gmail.com>
 
-pkgname=pkgbuild-template
-pkgdesc="Package template for Communitybig"
+pkgname=comm-oracle-optimize
+pkgdesc="Optimization package for BigCommunity Linux on Oracle Cloud. Includes kernel tuning (BBR, FQ), sysctl adjustments, system limits, serial console setup, and service optimizations for AMD EPYC processors."
 # Uncomment and edit the following lines as needed
-#depends=('')
+depends=('bash' 'coreutils' 'grub' 'chrony')
 #makedepends=('')
 #optdepends=('')
 #conflicts=('')
