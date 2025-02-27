@@ -46,16 +46,19 @@ post_install() {
     echo -e "${green}Applying sysctl optimizations...${nc}"
     sysctl -p /etc/sysctl.d/99-oracle-optimize.conf
     
-    # Configure GRUB for serial console
-    echo -e "${green}Configuring GRUB for serial console access...${nc}"
-    if ! grep -q "console=ttyS0,9600n8" /etc/default/grub; then
-        sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ console=tty0 console=ttyS0,9600n8"/' /etc/default/grub
-        echo -e "${yellow}Added serial console parameters to GRUB configuration${nc}"
-        grub-mkconfig -o /boot/grub/grub.cfg
-        echo -e "${green}Generated updated GRUB configuration${nc}"
-    else
-        echo -e "${yellow}Serial console already configured in GRUB${nc}"
-    fi
+    # Configure GRUB for server environment
+    echo -e "${green}Configuring GRUB for Oracle Cloud environment...${nc}"
+    
+    # Backup original GRUB_CMDLINE_LINUX_DEFAULT
+    GRUB_OLD=$(grep "GRUB_CMDLINE_LINUX_DEFAULT" /etc/default/grub)
+    echo -e "${yellow}Original GRUB config: $GRUB_OLD${nc}"
+    
+    # Create optimized GRUB config for Oracle Cloud
+    sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash console=tty0 console=ttyS0,9600n8 rd.driver.blacklist=nouveau intel_iommu=on net.ifnames=0 biosdevname=0 nvme_core.io_timeout=4294967295 mitigations=off"/' /etc/default/grub
+    
+    echo -e "${yellow}Added optimized parameters to GRUB configuration${nc}"
+    grub-mkconfig -o /boot/grub/grub.cfg
+    echo -e "${green}Generated updated GRUB configuration${nc}"
     
     # Ensure all required modules are loaded
     echo -e "${green}Checking for required kernel modules...${nc}"
